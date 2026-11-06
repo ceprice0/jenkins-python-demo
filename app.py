@@ -6,14 +6,21 @@ HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-<title>Snake Game</title>
+<title>Calum's Snake Game</title>
 
 <style>
+
 body{
-    background:#111;
-    color:white;
+    margin:0;
+    background:#0e0e0e;
     font-family:Arial,sans-serif;
     text-align:center;
+    color:white;
+}
+
+h1{
+    color:#00ff88;
+    text-shadow:0 0 15px #00ff88;
 }
 
 #score{
@@ -21,20 +28,35 @@ body{
     margin:10px;
 }
 
-canvas{
-    background:black;
-    border:3px solid lime;
+button{
+    background:#00ff88;
+    border:none;
+    padding:12px 24px;
+    font-size:18px;
+    border-radius:8px;
+    cursor:pointer;
 }
-</style>
 
+canvas{
+    background:#000;
+    border:4px solid #00ff88;
+    box-shadow:0 0 20px #00ff88;
+}
+
+</style>
 </head>
+
 <body>
 
 <h1>🐍 Calum's Snake Game</h1>
 
 <div id="score">Score: 0</div>
 
-<canvas id="game" width="400" height="400"></canvas>
+<button onclick="startGame()">Start Game</button>
+
+<br><br>
+
+<canvas id="game" width="500" height="500"></canvas>
 
 <script>
 
@@ -43,88 +65,117 @@ const ctx = canvas.getContext("2d");
 
 const box = 20;
 
-let snake = [
-    {x: 200, y: 200}
-];
+let snake;
+let food;
+let dx;
+let dy;
+let score;
+let gameLoop;
 
-let score = 0;
+function resetGame(){
 
-let food = {
-    x: Math.floor(Math.random()*20)*20,
-    y: Math.floor(Math.random()*20)*20
-};
+    snake = [{x:240,y:240}];
 
-let dx = 0;
-let dy = 0;
+    food = {
+        x:Math.floor(Math.random()*25)*20,
+        y:Math.floor(Math.random()*25)*20
+    };
+
+    dx = 20;
+    dy = 0;
+
+    score = 0;
+
+    document.getElementById("score").innerHTML =
+    "Score: 0";
+}
+
+function startGame(){
+
+    clearInterval(gameLoop);
+
+    resetGame();
+
+    gameLoop = setInterval(draw,120);
+}
 
 document.addEventListener("keydown",(e)=>{
 
     if(e.key==="ArrowUp" && dy===0){
         dx=0;
-        dy=-box;
+        dy=-20;
     }
 
     if(e.key==="ArrowDown" && dy===0){
         dx=0;
-        dy=box;
+        dy=20;
     }
 
     if(e.key==="ArrowLeft" && dx===0){
-        dx=-box;
+        dx=-20;
         dy=0;
     }
 
     if(e.key==="ArrowRight" && dx===0){
-        dx=box;
+        dx=20;
         dy=0;
     }
 
 });
 
-function game(){
+function draw(){
 
-    if(dx===0 && dy===0){
-        return;
-    }
-
-    ctx.clearRect(0,0,400,400);
+    ctx.clearRect(0,0,500,500);
 
     ctx.fillStyle="red";
     ctx.fillRect(food.x,food.y,box,box);
 
-    ctx.fillStyle="lime";
+    snake.forEach((part,index)=>{
 
-    snake.forEach(part=>{
+        if(index===0){
+            ctx.fillStyle="#00ff88";
+        }else{
+            ctx.fillStyle="lime";
+        }
+
         ctx.fillRect(part.x,part.y,box,box);
+
     });
 
-    const head = {
-        x: snake[0].x + dx,
-        y: snake[0].y + dy
+    let head = {
+        x:snake[0].x + dx,
+        y:snake[0].y + dy
     };
 
     if(
         head.x < 0 ||
         head.y < 0 ||
-        head.x >= 400 ||
-        head.y >= 400
+        head.x >= 500 ||
+        head.y >= 500
     ){
-        clearInterval(loop);
-        alert("Game Over! Score: " + score);
+        clearInterval(gameLoop);
+        alert("Game Over! Score: "+score);
         return;
     }
 
-    for(let i=0;i<snake.length;i++){
-        if(head.x===snake[i].x && head.y===snake[i].y){
-            clearInterval(loop);
-            alert("Game Over! Score: " + score);
+    for(let i=1;i<snake.length;i++){
+
+        if(
+            head.x===snake[i].x &&
+            head.y===snake[i].y
+        ){
+            clearInterval(gameLoop);
+            alert("Game Over! Score: "+score);
             return;
         }
     }
 
     snake.unshift(head);
 
-    if(head.x===food.x && head.y===food.y){
+    if(
+        head.x===food.x &&
+        head.y===food.y
+    ){
 
         score++;
 
@@ -132,16 +183,19 @@ function game(){
         "Score: " + score;
 
         food = {
-            x: Math.floor(Math.random()*20)*20,
-            y: Math.floor(Math.random()*20)*20
+            x:Math.floor(Math.random()*25)*20,
+            y:Math.floor(Math.random()*25)*20
         };
 
     } else {
+
         snake.pop();
+
     }
+
 }
 
-const loop = setInterval(game,120);
+resetGame();
 
 </script>
 

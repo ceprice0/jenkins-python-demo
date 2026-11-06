@@ -14,6 +14,12 @@ pipeline {
                 sh 'pytest --junitxml=results.xml'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t snake-game:latest .'
+            }
+        }
     }
 
     post {

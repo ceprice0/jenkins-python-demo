@@ -3,15 +3,9 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Install Dependencies') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Run Python Script') {
-            steps {
-                sh 'python3 app.py'
+                sh 'pip3 install -r requirements.txt'
             }
         }
 

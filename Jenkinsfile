@@ -9,13 +9,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip3 install --break-system-packages -r requirements.txt'
+                sh 'python3 -m pip install --user -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest --junitxml=results.xml'
+                sh 'python3 -m pytest --junitxml=results.xml'
             }
         }
 
@@ -35,7 +35,7 @@ pipeline {
 
     post {
         always {
-            junit 'results.xml'
+            junit testResults: 'results.xml', allowEmptyResults: true
         }
     }
 }

@@ -1,21 +1,17 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('H/5 * * * *')
-    }
-
     stages {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install --user --break-system-packages -r requirements.txt'
+                sh 'pip3 install --break-system-packages -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'python3 -m pytest --junitxml=results.xml'
+                sh 'pytest --junitxml=results.xml'
             }
         }
 
@@ -35,7 +31,7 @@ pipeline {
 
     post {
         always {
-            junit testResults: 'results.xml', allowEmptyResults: true
+            junit 'results.xml'
         }
     }
 }

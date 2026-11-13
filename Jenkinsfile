@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'python-cloud-agent' }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
     stages {
 
         stage('Install Dependencies') {

@@ -9,7 +9,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install --user -r requirements.txt'
+                sh 'python3 -m pip install --user --break-system-packages -r requirements.txt'
             }
         }
 

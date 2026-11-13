@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'python-cloud-agent' }
+    agent any
 
     triggers {
         pollSCM('H/5 * * * *')
